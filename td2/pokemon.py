@@ -110,15 +110,21 @@ class Combat(Event):
         self.menu.render()
 
     def capture_input(self, input:str) -> None:
-        print(input)
         if input == "j":
             self.options[self.cursor_pos].set_cursor(False)
             self.cursor_pos = (self.cursor_pos + 1) % len(self.options)
             self.options[self.cursor_pos].set_cursor(True)
+            self.__refresh_menu()
         if input == "k":
             self.options[self.cursor_pos].set_cursor(False)
             self.cursor_pos = (self.cursor_pos - 1) % len(self.options)
             self.options[self.cursor_pos].set_cursor(True)
+            self.__refresh_menu()
+
+    def __refresh_menu(self) -> None:
+        self.menu.refresh()
+        for option in self.options:
+            self.menu.position_on_self(option)
 
 
 
@@ -127,6 +133,7 @@ class UIElement:
         self.pos_y = pos_y
         self.pos_x = pos_x
         self.ascii = [list(line) for line in ascii]
+        self.__initial_state = list(self.ascii)
 
     def position_on_self(self, ui) -> None:
         if ui.pos_x + len(ui.ascii[0]) > len(self.ascii[0]):
@@ -142,6 +149,15 @@ class UIElement:
     def render(self) -> None:
         joint_text = "\n".join("".join(line) for line in self.ascii)
         print(f"\033[{self.pos_y};{self.pos_x}H{joint_text}", end="", flush=True)
+
+    def refresh(self) -> None:
+        self.ascii = self.initial_state
+
+        
+    @property
+    def initial_state(self) -> List[str]:
+        return self.__initial_state
+
 
 class MenuOption(UIElement):
     def __init__(self, pos_x: int, pos_y: int, ascii: List[str], has_cursor: bool = False) -> None:
