@@ -7,6 +7,7 @@ import termios
 import time
 
 class GameState:
+
     def __init__(self, events: List[Event]) -> None:
         self.events_dict = {}
         self.__quit = False
@@ -21,11 +22,7 @@ class GameState:
         self.clear()
         while not self.__quit:
             main_event = self.events_dict["main"]
-            main_event.execute()
-            char = GameState.get_char()
-            if char == "q":
-                self.__quit = True
-            main_event.capture_input(char)
+            self.__quit = main_event.execute()
 
 
     def get_char() -> str:

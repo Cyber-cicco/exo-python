@@ -1,6 +1,7 @@
 from ui.element import UIElement
 from typing import List, Callable
 
+# Garbage code, menu should get options and height should be set dynamically
 class Menu(UIElement):
 
     MENU = [

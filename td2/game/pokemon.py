@@ -28,15 +28,17 @@ class Pokemon:
     def is_dead(self) -> bool:
         return self.hp == 0
 
-    def take_damage(self, pokemon) -> None:
+    def take_damage(self, pokemon) -> int:
         multiplier = 1
         if self.afinities_dict.get(type(pokemon)) is not None:
             multiplier = self.afinities_dict[type(pokemon)]
-        res = self.hp - pokemon.atk * multiplier  # Fixed assignment
+        dmg = int(pokemon.atk * multiplier)
+        res = self.hp - dmg  # Fixed assignment
         if res < 0:
             self.__hp = 0
         else:
             self.__hp = res
+        return int(dmg)
 
     def attaquer(self, pokemon) -> None:
         pokemon.take_damage(self.atk, self)  # Pass 'self' as the attacker

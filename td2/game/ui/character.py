@@ -30,4 +30,4 @@ class Character(UIElement):
         self.char_type = char_type
         
     def refresh(self):
-        self.ascii = [list(line) for line in Character.CHARACTERS[char_type]]
+        self.ascii = [list(line) for line in Character.CHARACTERS[self.char_type]]
