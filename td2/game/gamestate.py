@@ -11,15 +11,15 @@ class GameState:
         self.events_dict = {}
         self.__quit = False
         if os.name == "nt":
-            raise Exception("Windows is not supported.")
+            raise Exception("Wtf are you doing on windows wtf bro pls stop frfr")
         elif os.name == "posix":
             self.clear = lambda: os.system("clear")
         for e in events:
             self.events_dict[e.id] = e
 
     def main_loop(self):
+        self.clear()
         while not self.__quit:
-            self.clear()
             main_event = self.events_dict["main"]
             main_event.execute()
             char = GameState.get_char()

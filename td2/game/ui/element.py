@@ -6,6 +6,7 @@ class UIElement:
         self.pos_y = pos_y
         self.pos_x = pos_x
         self.ascii = [list(line) for line in ascii]
+        self.__should_render = True
 
     def position_on_self(self, ui) -> None:
         if ui.pos_x + len(ui.ascii[0]) > len(self.ascii[0]):
@@ -16,14 +17,16 @@ class UIElement:
         for i, ascii_line in enumerate(ui.ascii):
             start = ui.pos_x
             end = start + len(ascii_line)
-            print(self.ascii[i + ui.pos_y])
-            print(ascii_line)
-            self.ascii[i + ui.pos_y][start:end] = ''.join(ascii_line)
+            self.ascii[i + ui.pos_y][start:end] = ascii_line
+        self.__should_render = True
 
-    def render(self) -> None:
-        joint_text = "\n".join("".join(line) for line in self.ascii)
-        print(f"\033[{self.pos_y};{self.pos_x}H{joint_text}", end="", flush=True)
+    def render(self, force_render:bool=False) -> None:
+        if self.__should_render or force_render:
+            joint_list = list("".join(line) for line in self.ascii)
+            for index, joint_text in enumerate(joint_list):
+                print(f"\033[{self.pos_y + index};{self.pos_x}H{joint_text}", end="", flush=True)
+            self.__should_render = False
 
     def refresh(self) -> None:
-        pass
+        self.__should_render = True
 

@@ -28,11 +28,11 @@ class Pokemon:
     def is_dead(self) -> bool:
         return self.hp == 0
 
-    def take_damage(self, atk: int, pokemon) -> None:
+    def take_damage(self, pokemon) -> None:
         multiplier = 1
         if self.afinities_dict.get(type(pokemon)) is not None:
             multiplier = self.afinities_dict[type(pokemon)]
-        res = self.hp - atk * multiplier  # Fixed assignment
+        res = self.hp - pokemon.atk * multiplier  # Fixed assignment
         if res < 0:
             self.__hp = 0
         else:
