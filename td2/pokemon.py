@@ -133,7 +133,9 @@ class UIElement:
         self.pos_y = pos_y
         self.pos_x = pos_x
         self.ascii = [list(line) for line in ascii]
-        self.__initial_state = list(self.ascii)
+        self.__initial_state = self.ascii.deepcopy()
+        print("\n".join("".join(line) for line in self.initial_state))
+        time.sleep(1)
 
     def position_on_self(self, ui) -> None:
         if ui.pos_x + len(ui.ascii[0]) > len(self.ascii[0]):
@@ -152,6 +154,8 @@ class UIElement:
 
     def refresh(self) -> None:
         self.ascii = self.initial_state
+        print("\n".join("".join(line) for line in self.initial_state))
+        time.sleep(1)
 
         
     @property
