@@ -73,8 +73,8 @@ class Combat(Event):
         self.ui["ally"].render()
         self.ui["ennemy_menu"].render(self.ennemy_props)
         self.ui["ally_menu"].render(self.ally_props)
+        self.ui["footer"].render()
         self.ui["menu"].render()
-        self.ui["footer"].render(True)
 
         if self.ally.hp == 0:
             PopUp("Vous avez échoué...", list(self.ui.values()), pop_up_time=1.5).render()

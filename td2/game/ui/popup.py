@@ -1,33 +1,14 @@
 from ui.element import UIElement
+from ui.dynamic_box import DynamicBox
 from typing import List
 import time
 
-class PopUp(UIElement):
-
-
-    TOP = "/---------------------------\\"
-    BOT = ["\\---------------------------/"]
-
-
+class PopUp(DynamicBox):
 
     def __init__(self,content:str, rerenders: List[UIElement], pos_x:int=10, pos_y:int=13, pop_up_time=2):
         self.rerenders = rerenders
         self.pop_up_time = pop_up_time
-        ascii = self.get_ascii(content)
-        super().__init__(pos_x, pos_y, ascii)
-
-    def get_ascii(self, content:str) -> List[str]:
-        ascii = [self.TOP]
-        while len(content) > len(self.TOP) - 2 :
-            new_line = "|" + content[:len(PopUp.TOP) - 2] + "|"
-            content = content[len(self.TOP) - 3:]
-            ascii.append(new_line)
-        padding_left = len(self.TOP) - len(content) - 2
-        content = "|" + content + " " * padding_left + "|"
-        ascii.append(content)
-        for line in self.BOT:
-            ascii.append(line)
-        return ascii
+        super().__init__([content], pos_x, pos_y)
 
     def render(self):
         for el in self.rerenders:

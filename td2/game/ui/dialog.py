@@ -5,6 +5,9 @@ from typing import List
 
 class DialogRight(PopUp):
 
+    TOP = [
+        "-----------------------------"
+    ]
     BOT = [
         "\\------------------- -------/",
         "                    V        ",
@@ -15,7 +18,7 @@ class DialogRight(PopUp):
 
     def render(self):
         for content in self.contents:
-            self.ascii = self.get_ascii(content)
+            self.ascii = self.get_ascii([content])
             for el in self.rerenders:
                 el.refresh()
             joint_list = list("".join(line) for line in self.ascii)
