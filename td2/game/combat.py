@@ -4,17 +4,20 @@ from ui.menu import Menu, MenuOption
 from ui.footer import Footer
 from ui.character import CharacterType, Character
 from ui.popup import PopUp
+from ui.dialog import DialogRight
 from ui.fightstats import FightStats
 from ui.hp_bar import HpBar
 from pokemon import Pokemon
 from enum import Enum
 from gamestate import GameState
+
 import time
+import random
 
 class CombatTurn(Enum):
     ALLY = 0
     ENNEMY = 1
-    END = 2
+    FLEE = 2
 
 class Combat(Event):
     
@@ -88,13 +91,16 @@ class Combat(Event):
 
         elif self.combat_turn == CombatTurn.ENNEMY:
 
-            PopUp(f"Autour de l'ennemi d'attaquer !", list(self.ui.values()), pop_up_time=1.5).render()
+            PopUp(f"Au tour de l'ennemi d'attaquer !", list(self.ui.values()), pop_up_time=1.5).render()
             PopUp(f"{self.ennemy.nom} utilise attaque !", list(self.ui.values()), pop_up_time=1.5).render()
             dmg = self.ally.take_damage(self.ennemy)
             PopUp(f"{self.ally.nom} a subit {dmg} points de dégats.", list(self.ui.values())).render()
             self.ui["ally_menu"].refresh(self.ally_props)
             self.combat_turn = CombatTurn.ALLY
             return False
+
+        elif self.combat_turn.FLEE: 
+            return True
 
 
     def attaquer(self) -> None:
@@ -106,13 +112,18 @@ class Combat(Event):
 
 
     def parler(self) -> None:
-        print("parler")
-        time.sleep(1)
+        DialogRight(["Bonjour", "J'aime le boulgour"], list(self.ui.values()), 2, 19).render()
 
 
     def fuir(self) -> None:
-        print("fuir")
-        time.sleep(1)
+        PopUp(f"{self.ally.nom} s'enfuit comme un gros lâche !", list(self.ui.values()), pop_up_time=3).render()
+        rand = random.randint(0, 100)
+        print(rand)
+        if rand <= 50:
+            PopUp(f"Mais sa lacheté ne paie pas : l'ennemi bloque le passage !", list(self.ui.values()), pop_up_time=2).render()
+            self.combat_turn = CombatTurn.ENNEMY
+        else : 
+            self.combat_turn = CombatTurn.FLEE
 
 
     def capture_input(self, input:str) -> bool:
