@@ -10,7 +10,7 @@ class PopUp(UIElement):
 
 
 
-    def __init__(self,content:str, rerenders: List[UIElement], pos_x:int=15, pos_y:int=15, pop_up_time=3):
+    def __init__(self,content:str, rerenders: List[UIElement], pos_x:int=0, pos_y:int=15, pop_up_time=2):
         self.rerenders = rerenders
         self.pop_up_time = pop_up_time
         ascii = [self.TOP]

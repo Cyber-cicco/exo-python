@@ -2,10 +2,12 @@ from typing import List
 import time
 
 class UIElement:
-    def __init__(self, pos_x: int, pos_y: int, ascii: List[str]) -> None:
+    def __init__(self, pos_x: int, pos_y: int, ascii: List[str], children: List[object]=[], props: dict={}) -> None:
         self.pos_y = pos_y
         self.pos_x = pos_x
         self.ascii = [list(line) for line in ascii]
+        self.children = children
+        self.props = props
         self.__should_render = True
 
     def position_on_self(self, ui) -> None:
@@ -22,11 +24,17 @@ class UIElement:
 
     def render(self, force_render:bool=False) -> None:
         if self.__should_render or force_render:
+            for child in self.children:
+                self.position_on_self(child)
             joint_list = list("".join(line) for line in self.ascii)
             for index, joint_text in enumerate(joint_list):
                 print(f"\033[{self.pos_y + index};{self.pos_x}H{joint_text}", end="", flush=True)
             self.__should_render = False
 
-    def refresh(self) -> None:
+    def refresh(self, props:dict={}) -> None:
+        self.props = {**self.props, **props}
+        for child in self.children:
+            child.refresh(self.props)
+            self.position_on_self(child)
         self.__should_render = True
 
