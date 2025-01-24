@@ -1,24 +1,6 @@
 from ui.element import UIElement
+from ui.dynamic_box import DynamicBox
 from typing import List, Callable
-
-# Garbage code, menu should get options and height should be set dynamically
-class Menu(UIElement):
-
-    MENU = [
-                "/---------------------------\\",
-                "|                           |",
-                "|                           |",
-                "|                           |",
-                "\\---------------------------/",
-            ]
-
-    def __init__(self, pos_x:int, pos_y:int):
-        super().__init__(pos_x, pos_y, Menu.MENU)
-        
-    def refresh(self):
-        self.ascii = [list(line) for line in Menu.MENU]
-
-
 
 class MenuOption(UIElement):
     def __init__(self, pos_x: int, pos_y: int, ascii: List[str], execute_option:Callable[[], None], has_cursor: bool = False) -> None:
@@ -33,8 +15,21 @@ class MenuOption(UIElement):
         if self.has_cursor and not has:
             # Remove the '>' from the first line
             self.ascii[0] = self.ascii[0][1:]  # Slice from index 1 onward
+            self.ascii[0].append(" ")
         elif not self.has_cursor and has:
             # Add '>' to the beginning of the first line
             self.ascii[0] = ['>'] + self.ascii[0]
         self.has_cursor = has
+
+
+class Menu(DynamicBox):
+
+    def __init__(self, pos_x:int, pos_y:int, options:List[MenuOption]):
+        ascii = []
+        for option in options:
+            ascii.append(''.join(option.ascii[0]))
+        
+        super().__init__(ascii, pos_x, pos_y, options)
+        
+
 

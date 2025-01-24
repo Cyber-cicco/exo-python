@@ -31,33 +31,31 @@ class Combat(Event):
         self.parent = parent
         self.combat_turn = CombatTurn.ALLY
 
-        menu = Menu(
-            pos_x=0,
-            pos_y=30,
-        )
         self.ui = {}
         self.ui["footer"] = Footer()
         self.ui["ally"] = Character(0, 25, CharacterType.FACING_RIGHT)
         self.ui["ennemy"] = Character(20, 23, CharacterType.FACING_LEFT)
 
-        ennemy_hp = HpBar(self.ennemy_props) 
         ally_hp = HpBar(self.ally_props) 
-
         ally_name = UIElement(1, 1, [self.ally.nom])
-        ennemy_name = UIElement(1, 1, [self.ennemy.nom])
-
         self.ui["ally_menu"] = FightStats(0, 15, [ally_name, ally_hp])
+
+        ennemy_hp = HpBar(self.ennemy_props) 
+        ennemy_name = UIElement(1, 1, [self.ennemy.nom])
         self.ui["ennemy_menu"] = FightStats(25, 15, [ennemy_name, ennemy_hp])
 
-        attaquer = MenuOption(2, 1, ["attaquer"], lambda: self.attaquer(), True)
-        parler = MenuOption(2, 2, ["parler"], lambda: self.parler())
-        fuir = MenuOption(2, 3, ["fuir"], lambda: self.fuir())
+        attaquer = MenuOption(1, 1, ["attaquer"], lambda: self.attaquer(), True)
+        parler = MenuOption(1, 2, ["parler"], lambda: self.parler())
+        objets = MenuOption(1, 3, ["objet"], lambda: self.objets())
+        fuir = MenuOption(1, 4, ["fuir"], lambda: self.fuir())
+
         self.cursor_pos = 0
-        self.options = [attaquer,parler, fuir]
-        menu.position_on_self(attaquer)
-        menu.position_on_self(parler)
-        menu.position_on_self(fuir)
-        self.ui["menu"] = menu
+        self.options = [attaquer,parler, objets, fuir]
+        self.ui["menu"] = Menu(
+            0,
+            30,
+            [attaquer, parler, objets, fuir],
+        )
 
     @property
     def ally_props(self) -> dict:
@@ -114,6 +112,8 @@ class Combat(Event):
     def parler(self) -> None:
         DialogRight(["Bonjour", "J'aime le boulgour"], list(self.ui.values()), 2, 19).render()
 
+    def objets(self):
+        PopUp("Vous n'avez pas d'objet ! ", list(self.ui.values()), pop_up_time=1.5).render()
 
     def fuir(self) -> None:
         PopUp(f"{self.ally.nom} s'enfuit comme un gros lâche !", list(self.ui.values()), pop_up_time=3).render()
