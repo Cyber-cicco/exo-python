@@ -10,7 +10,7 @@ class HpBar(UIElement):
         self.ascii = [self.__get_line(self.props["hp"], self.props["max_hp"])]
 
     def __get_line(self, hp:int, max_hp:int) -> str:
-        val = int(float(hp) / float(max_hp)) * 10
+        val = int(float(hp) / float(max_hp) * 10)
         line = f"{hp}/{max_hp} |"
         i = 0
         while i < 10:

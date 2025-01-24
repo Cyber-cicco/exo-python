@@ -1,6 +1,7 @@
 from event import Event
 from ui.element import UIElement
 from ui.menu import Menu, MenuOption
+from ui.footer import Footer
 from ui.character import CharacterType, Character
 from ui.popup import PopUp
 from ui.fightstats import FightStats
@@ -13,6 +14,7 @@ import time
 class CombatTurn(Enum):
     ALLY = 0
     ENNEMY = 1
+    END = 2
 
 class Combat(Event):
     
@@ -31,6 +33,7 @@ class Combat(Event):
             pos_y=30,
         )
         self.ui = {}
+        self.ui["footer"] = Footer()
         self.ui["ally"] = Character(0, 25, CharacterType.FACING_RIGHT)
         self.ui["ennemy"] = Character(20, 23, CharacterType.FACING_LEFT)
 
@@ -65,9 +68,18 @@ class Combat(Event):
     def execute(self) -> bool:
         self.ui["ennemy"].render()
         self.ui["ally"].render()
-        self.ui["menu"].render()
         self.ui["ennemy_menu"].render(self.ennemy_props)
         self.ui["ally_menu"].render(self.ally_props)
+        self.ui["menu"].render()
+        self.ui["footer"].render(True)
+
+        if self.ally.hp == 0:
+            PopUp("Vous avez échoué...", list(self.ui.values()), pop_up_time=1.5).render()
+            return True
+
+        if self.ennemy.hp == 0:
+            PopUp("Vous avez triomphé !", list(self.ui.values()), pop_up_time=1.5).render()
+            return True
 
         if self.combat_turn == CombatTurn.ALLY:
 
