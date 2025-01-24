@@ -12,7 +12,7 @@ class GameState:
         self.events_dict = {}
         self.__quit = False
         if os.name == "nt":
-            raise Exception("Wtf are you doing on windows wtf bro pls stop frfr")
+            raise Exception("Wtf are you doing on windows wtf bro pls stop frfr at least use WSL idk bro")
         elif os.name == "posix":
             self.clear = lambda: os.system("clear")
         for e in events:
