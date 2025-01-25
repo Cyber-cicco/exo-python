@@ -14,5 +14,5 @@ class Footer(UIElement):
     def __init__(self, pos_x:int=0, pos_y:int=37):
         super().__init__(pos_x, pos_y, self.FOOTER)
         
-    def refresh(self):
+    def refresh(self, props:dict={}):
         self.ascii = [list(line) for line in self.FOOTER]

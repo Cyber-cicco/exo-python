@@ -1,7 +1,6 @@
 from ui.popup import PopUp
 from ui.element import UIElement
 from gamestate import GameState
-from typing import List
 
 class DialogRight(PopUp):
 
@@ -12,11 +11,11 @@ class DialogRight(PopUp):
         "\\------------------- -------/",
         "                    V        ",
     ]
-    def __init__(self, contents:List[str], rerenders:List[UIElement], pos_x:int, pos_y:int):
+    def __init__(self, contents:list[str], rerenders:list[UIElement], pos_x:int, pos_y:int):
         super().__init__(contents[0], rerenders, pos_x, pos_y)
         self.contents = contents
 
-    def render(self):
+    def render(self, force_render:bool=False):
         for content in self.contents:
             self.ascii = self.get_ascii([content])
             for el in self.rerenders:

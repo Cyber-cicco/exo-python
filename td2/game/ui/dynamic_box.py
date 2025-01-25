@@ -1,16 +1,16 @@
 from ui.element import UIElement
-from typing import List
+from typing import Iterable
 
 class DynamicBox(UIElement):
 
     TOP = ["/---------------------------\\"]
     BOT = ["\\---------------------------/"]
 
-    def __init__(self,content:List[str], pos_x:int, pos_y:int, children: List[UIElement]=[]):
+    def __init__(self,content:list[str], pos_x:int, pos_y:int, children: Iterable[UIElement]=[]):
         ascii = self.get_ascii(content)
         super().__init__(pos_x, pos_y, ascii, children=children)
 
-    def get_ascii(self, content:str) -> List[str]:
+    def get_ascii(self, content:list[str]) -> list[str]:
         ascii = []
         for line in self.TOP:
             ascii.append(line)

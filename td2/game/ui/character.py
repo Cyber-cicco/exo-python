@@ -29,5 +29,5 @@ class Character(UIElement):
         super().__init__(pos_x, pos_y, Character.CHARACTERS[char_type])
         self.char_type = char_type
         
-    def refresh(self):
+    def refresh(self, props:dict={}):
         self.ascii = [list(line) for line in Character.CHARACTERS[self.char_type]]

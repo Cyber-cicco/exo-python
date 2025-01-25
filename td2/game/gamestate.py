@@ -1,14 +1,13 @@
 from event import Event
-from typing import List
+from typing import Iterable
 import os
 import tty
 import sys
 import termios
-import time
 
 class GameState:
 
-    def __init__(self, events: List[Event]) -> None:
+    def __init__(self, events: Iterable[Event]) -> None:
         self.events_dict = {}
         self.__quit = False
         if os.name == "nt":
