@@ -1,4 +1,3 @@
-import time
 from event import Event
 from ui.element import UIElement
 from ui.menu import Menu, MenuOption

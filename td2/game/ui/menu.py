@@ -15,7 +15,8 @@ class MenuOption(UIElement):
         if self.has_cursor and not has:
             # Remove the '>' from the first line
             self.ascii[0] = self.ascii[0][1:]  # Slice from index 1 onward
-            self.ascii[0].append(" ")
+            if self.ascii[0][-1] != " ":
+                self.ascii[0].append(" ")
         elif not self.has_cursor and has:
             # Add '>' to the beginning of the first line
             self.ascii[0] = ['>'] + self.ascii[0]
