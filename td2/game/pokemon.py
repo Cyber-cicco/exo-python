@@ -10,7 +10,15 @@ class Pokemon:
     WEAKNESS_MULT = 2.0
     RESIST_MULT = 0.5
 
-    def __init__(self, nom: str, hp: int, atk: int, df:int, spdf:int, attacks:dict[str,Attack], ia:Callable[["Combat", "Pokemon", "Pokemon"], list[str]]) -> None:
+    def __init__(self,
+                 nom: str,
+                 hp: int,
+                 atk: int,
+                 df: int,
+                 spdf: int,
+                 attacks: dict[str, Attack],
+                 ia: Callable[["Combat", "Pokemon", "Pokemon"], list[str]]
+                 ) -> None:
         self.__nom = nom
         self.__hp = hp
         self.__hp_max = hp
@@ -23,25 +31,25 @@ class Pokemon:
         self.__attacks = attacks
         self.ia = ia
 
-    def add_affliction(self, affliction:Affliction, combat_turn:int) -> None:
-        self.__afflictions[affliction.name] = PokemonAffliction(affliction, combat_turn)
+    def add_affliction(self, affliction: Affliction, combat_turn: int) -> None:
+        self.__afflictions[affliction.name] = PokemonAffliction(
+            affliction, combat_turn)
 
-    def run_afflictions(self, combat_turn:int) -> None:
+    def run_afflictions(self, combat_turn: int) -> None:
         for aff in self.__afflictions.values():
             aff.afflict(self)
             rand = random.randint(0, 100)
             if ((rand < aff.recovery_chance + self.spdf and
                 combat_turn - aff.combat_turn > aff.min_turns) or
-                combat_turn - aff.combat_turn >= aff.max_turns):
+                    combat_turn - aff.combat_turn >= aff.max_turns):
                 self.recover_from_affliction(aff.name)
 
     def recover_all_afflictions(self):
         for aff in self.__afflictions.values():
             self.recover_from_affliction(aff.name)
 
-    def recover_from_affliction(self, name:str) -> None:
+    def recover_from_affliction(self, name: str) -> None:
         self.__afflictions[name].recover(self)
-
 
     @property
     def nom(self) -> str:
@@ -58,7 +66,7 @@ class Pokemon:
     @property
     def df(self) -> int:
         return self.__df
-    
+
     @property
     def spdf(self) -> int:
         return self.__spdf
@@ -68,7 +76,7 @@ class Pokemon:
         return self.__hp
 
     @hp.setter
-    def hp(self, amount:int):
+    def hp(self, amount: int):
         if amount < 0:
             amount = 0
         self.__hp = amount
@@ -80,7 +88,12 @@ class Pokemon:
     def is_dead(self) -> bool:
         return self.hp == 0
 
-    def take_damage(self, attacker:"Pokemon", attack:Attack, combat_turn:int, diags:list[str]) -> list[str]:
+    def take_damage(self,
+                    attacker: "Pokemon",
+                    attack: Attack,
+                    combat_turn: int,
+                    diags: list[str]
+                    ) -> list[str]:
         # Gestion des coups efficaces
         multiplier = 1
         if self.affinities_dict.get(attack.atk_type) is not None:
@@ -97,7 +110,7 @@ class Pokemon:
             diags.append("Coup critique !")
 
         # Gestion des dégâts supplémentaires en fonction de la force
-        max_add_power = int((attack.pwr_mult /100) * attacker.atk)
+        max_add_power = int((attack.pwr_mult / 100) * attacker.atk)
         add_power = random.randint(int(max_add_power / 3), max_add_power)
         dmg = int((attack.base_pwr + add_power) * multiplier - self.__df)
 
@@ -108,28 +121,60 @@ class Pokemon:
         self.hp = res
         return diags
 
-    def attaquer(self, target:"Pokemon", attack:Attack, combat_turn:int, diags:list[str]) -> list[str]:
+    def attaquer(self,
+                 target: "Pokemon",
+                 attack: Attack,
+                 combat_turn: int,
+                 diags: list[str]
+                 ) -> list[str]:
         return target.take_damage(self, attack, combat_turn, diags)
 
     def __str__(self) -> str:
         return f"{self.nom} est un pokemon normal. Caractéristiques : \n HP: {self.hp}/{self.hp_max}\n Atk : {self.atk}"
 
+
 class TypePlante(Pokemon):
-    def __init__(self, nom: str, hp: int, atk: int, df:int, spdf:int, attacks:dict[str, Attack], ia:Callable[["Combat", Pokemon, Pokemon], list[str]] ) -> None:
+    def __init__(self,
+                 nom: str,
+                 hp: int,
+                 atk: int,
+                 df: int,
+                 spdf: int,
+                 attacks: dict[str, Attack],
+                 ia: Callable[["Combat", Pokemon, Pokemon], list[str]]
+                 ) -> None:
         super().__init__(nom, hp, atk, df, spdf, attacks, ia)
         self.affinities_dict[AttackType.FEU] = Pokemon.WEAKNESS_MULT
         self.affinities_dict[AttackType.PLANTE] = Pokemon.RESIST_MULT
         self.affinities_dict[AttackType.EAU] = Pokemon.RESIST_MULT
 
+
 class TypeFeu(Pokemon):
-    def __init__(self, nom: str, hp: int, atk: int, df:int, spdf:int, attacks:dict[str, Attack], ia:Callable[["Combat", Pokemon, Pokemon], list[str]] ) -> None:
+    def __init__(self,
+                 nom: str,
+                 hp: int,
+                 atk: int,
+                 df: int,
+                 spdf: int,
+                 attacks: dict[str, Attack],
+                 ia: Callable[["Combat", Pokemon, Pokemon], list[str]]
+                 ) -> None:
         super().__init__(nom, hp, atk, df, spdf, attacks, ia)
         self.affinities_dict[AttackType.FEU] = Pokemon.RESIST_MULT
         self.affinities_dict[AttackType.PLANTE] = Pokemon.RESIST_MULT
         self.affinities_dict[AttackType.EAU] = Pokemon.WEAKNESS_MULT
 
+
 class TypeEau(Pokemon):
-    def __init__(self, nom: str, hp: int, atk: int, df:int, spdf:int, attacks:dict[str, Attack], ia:Callable[["Combat", Pokemon, Pokemon], list[str]] ) -> None:
+    def __init__(self,
+                 nom: str,
+                 hp: int,
+                 atk: int,
+                 df: int,
+                 spdf: int,
+                 attacks: dict[str, Attack],
+                 ia: Callable[["Combat", Pokemon, Pokemon], list[str]]
+                 ) -> None:
         super().__init__(nom, hp, atk, df, spdf, attacks, ia)
         self.affinities_dict[AttackType.FEU] = Pokemon.RESIST_MULT
         self.affinities_dict[AttackType.EAU] = Pokemon.RESIST_MULT

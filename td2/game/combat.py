@@ -14,15 +14,21 @@ from gamestate import GameState
 from typing import Union
 import random
 
+
 class CombatTurn(Enum):
     ALLY = 0
     ENNEMY = 1
     FLEE = 2
 
-class Combat(Event):
-    
 
-    def __init__(self, id: str, ally:Pokemon, ennemy:Pokemon, parent:Union[Event, None]=None) -> None:
+class Combat(Event):
+
+    def __init__(self,
+                 id: str,
+                 ally: Pokemon,
+                 ennemy: Pokemon,
+                 parent: Union[Event, None] = None
+                 ) -> None:
         super().__init__(id)
 
         # Assignation basique
@@ -33,21 +39,22 @@ class Combat(Event):
         self.cursor_pos = 0
         self.turn_count = 1
 
-        self.ui:dict[str, UIElement] = {}
+        self.ui: dict[str, UIElement] = {}
         self.ui["footer"] = Footer()
         self.ui["ally"] = Character(0, 25, CharacterType.FACING_RIGHT)
         self.ui["ennemy"] = Character(20, 23, CharacterType.FACING_LEFT)
 
-        ally_hp = HpBar(self.ally_props) 
+        ally_hp = HpBar(self.ally_props)
         ally_name = UIElement(1, 1, [self.ally.nom])
         self.ui["ally_menu"] = FightStats(0, 15, [ally_name, ally_hp])
 
-        ennemy_hp = HpBar(self.ennemy_props) 
+        ennemy_hp = HpBar(self.ennemy_props)
         ennemy_name = UIElement(1, 1, [self.ennemy.nom])
         self.ui["ennemy_menu"] = FightStats(25, 15, [ennemy_name, ennemy_hp])
 
-        self.main_menu_options:list[MenuOption] = [
-            MenuOption(1, 1, ["attaquer"], lambda: self.show_attack_menu(), True),
+        self.main_menu_options: list[MenuOption] = [
+            MenuOption(1, 1, ["attaquer"],
+                       lambda: self.show_attack_menu(), True),
             MenuOption(1, 2, ["parler"], lambda: self.parler()),
             MenuOption(1, 3, ["objet"], lambda: self.objets()),
             MenuOption(1, 4, ["fuir"], lambda: self.fuir()),
@@ -59,7 +66,7 @@ class Combat(Event):
             options=self.main_menu_options,
         )
 
-        self.attack_options:list[MenuOption] = []
+        self.attack_options: list[MenuOption] = []
         for i, nom in enumerate(self.ally.attacks.keys()):
             self.attack_options.append(
                 MenuOption(1, i+1, [nom], lambda x=nom: self.attaquer(x))
@@ -81,7 +88,6 @@ class Combat(Event):
     def ennemy_props(self) -> dict:
         return {"hp": self.ennemy.hp, "max_hp": self.ennemy.hp_max}
 
-
     def execute(self) -> bool:
         self.ui["ennemy"].render()
         self.ui["ally"].render()
@@ -91,11 +97,13 @@ class Combat(Event):
         self.ui[self.current_menu].render()
 
         if self.ally.hp == 0:
-            PopUp("Vous avez échoué...", list(self.ui.values()), pop_up_time=1.5).render()
+            PopUp("Vous avez échoué...", list(
+                self.ui.values()), pop_up_time=1.5).render()
             return True
 
         if self.ennemy.hp == 0:
-            PopUp("Vous avez triomphé !", list(self.ui.values()), pop_up_time=1.5).render()
+            PopUp("Vous avez triomphé !", list(
+                self.ui.values()), pop_up_time=1.5).render()
             return True
 
         if self.combat_turn == CombatTurn.ALLY:
@@ -105,7 +113,8 @@ class Combat(Event):
 
         elif self.combat_turn == CombatTurn.ENNEMY:
 
-            PopUp(f"Au tour de l'ennemi d'attaquer !", list(self.ui.values()), pop_up_time=1.5).render()
+            PopUp("Au tour de l'ennemi d'attaquer !", list(
+                self.ui.values()), pop_up_time=1.5).render()
             diags = self.ennemy.ia(self, self.ennemy, self.ally)
             for diag in diags:
                 PopUp(diag, list(self.ui.values())).render()
@@ -114,7 +123,7 @@ class Combat(Event):
             self.__refresh_turn()
             return False
 
-        elif self.combat_turn.FLEE: 
+        elif self.combat_turn.FLEE:
             return True
 
         return False
@@ -131,10 +140,10 @@ class Combat(Event):
         self.options = self.attack_options
         self.__refresh_cursor()
 
-
-    def attaquer(self, attack_name:str) -> None:
+    def attaquer(self, attack_name: str) -> None:
         attack = self.ally.attacks[attack_name]
-        PopUp(f"{self.ally.nom} utilise {attack_name} !", list(self.ui.values()), pop_up_time=1.5).render()
+        PopUp(f"{self.ally.nom} utilise {attack_name} !",
+              list(self.ui.values()), pop_up_time=1.5).render()
         diags = []
         diags = self.ally.attaquer(self.ennemy, attack, self.turn_count, diags)
         for diag in diags:
@@ -143,21 +152,29 @@ class Combat(Event):
         self.combat_turn = CombatTurn.ENNEMY
         self.cursor_pos = 0
 
-
     def parler(self) -> None:
-        DialogRight(["Bonjour", "J'aime le boulgour"], list(self.ui.values()), 2, 19).render()
+        DialogRight(["Bonjour", "J'aime le boulgour"],
+                    list(self.ui.values()), 2, 19).render()
 
     def objets(self):
-        PopUp("Vous n'avez pas d'objet ! ", list(self.ui.values()), pop_up_time=1.5).render()
+        PopUp("Vous n'avez pas d'objet ! ", list(
+            self.ui.values()), pop_up_time=1.5).render()
 
     def fuir(self) -> None:
-        PopUp(f"{self.ally.nom} s'enfuit comme un gros lâche !", list(self.ui.values()), pop_up_time=3).render()
+        PopUp(f"{self.ally.nom} s'enfuit comme un gros lâche !",
+              list(self.ui.values()), pop_up_time=3).render()
         rand = random.randint(0, 100)
         print(rand)
         if rand <= 50:
-            PopUp(f"Mais sa lacheté ne paie pas : l'ennemi bloque le passage !", list(self.ui.values()), pop_up_time=2).render()
+            PopUp(
+                "Mais sa lacheté ne paie pas : l'ennemi bloque le passage !",
+                list(
+                    self.ui.values()
+                ),
+                pop_up_time=2
+            ).render()
             self.combat_turn = CombatTurn.ENNEMY
-        else : 
+        else:
             self.combat_turn = CombatTurn.FLEE
 
     def __refresh_cursor(self):
@@ -167,8 +184,7 @@ class Combat(Event):
             else:
                 option.set_cursor(False)
 
-
-    def capture_input(self, input:str) -> bool:
+    def capture_input(self, input: str) -> bool:
         if input == "j" or input == "[A":
             self.cursor_pos = (self.cursor_pos + 1) % len(self.options)
             self.__refresh_cursor()
@@ -183,7 +199,6 @@ class Combat(Event):
             self.options[self.cursor_pos].execute_option()
             return False
         return input == "q"
-
 
     def __refresh_menu(self) -> None:
         self.ui[self.current_menu].refresh()

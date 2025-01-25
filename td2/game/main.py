@@ -6,7 +6,7 @@ if __name__ == "__main__":
     game = GameState(
         [
             Combat(
-               "main",
+                "main",
                 POKEMONS["Salamèche"],
                 POKEMONS["Bulbizarre"],
             )

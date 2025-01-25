@@ -5,13 +5,16 @@ import tty
 import sys
 import termios
 
+
 class GameState:
 
     def __init__(self, events: Iterable[Event]) -> None:
         self.events_dict = {}
         self.__quit = False
         if os.name == "nt":
-            raise Exception("Wtf are you doing on windows wtf bro pls stop frfr at least use WSL idk bro")
+            raise Exception(
+                "Wtf are you doing on windows wtf bro pls stop frfr at least use WSL idk bro"
+            )
         elif os.name == "posix":
             self.clear = lambda: os.system("clear")
         for e in events:
@@ -22,7 +25,6 @@ class GameState:
         while not self.__quit:
             main_event = self.events_dict["main"]
             self.__quit = main_event.execute()
-
 
     def get_char() -> str:
         fd = sys.stdin.fileno()

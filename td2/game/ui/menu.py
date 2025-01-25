@@ -2,8 +2,15 @@ from ui.element import UIElement
 from ui.dynamic_box import DynamicBox
 from typing import Callable
 
+
 class MenuOption(UIElement):
-    def __init__(self, pos_x: int, pos_y: int, ascii: list[str], execute_option:Callable[[], None], has_cursor: bool = False) -> None:
+    def __init__(self,
+                 pos_x: int,
+                 pos_y: int,
+                 ascii: list[str],
+                 execute_option: Callable[[], None],
+                 has_cursor: bool = False
+                 ) -> None:
         super().__init__(pos_x, pos_y, ascii)
         self.has_cursor = has_cursor
         self.execute_option = execute_option
@@ -25,11 +32,8 @@ class MenuOption(UIElement):
 
 class Menu(DynamicBox):
 
-    def __init__(self, pos_x:int, pos_y:int, options:list[MenuOption]):
+    def __init__(self, pos_x: int, pos_y: int, options: list[MenuOption]):
         ascii = []
         for option in options:
             ascii.append(''.join(option.ascii[0]))
         super().__init__(ascii, pos_x, pos_y, options)
-        
-
-

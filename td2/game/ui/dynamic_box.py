@@ -1,22 +1,28 @@
 from ui.element import UIElement
 from typing import Iterable
 
+
 class DynamicBox(UIElement):
 
     TOP = ["/---------------------------\\"]
     BOT = ["\\---------------------------/"]
 
-    def __init__(self,content:list[str], pos_x:int, pos_y:int, children: Iterable[UIElement]=[]):
+    def __init__(self,
+                 content: list[str],
+                 pos_x: int,
+                 pos_y: int,
+                 children: Iterable[UIElement] = []
+                 ):
         ascii = self.get_ascii(content)
         super().__init__(pos_x, pos_y, ascii, children=children)
 
-    def get_ascii(self, content:list[str]) -> list[str]:
+    def get_ascii(self, content: list[str]) -> list[str]:
         ascii = []
         for line in self.TOP:
             ascii.append(line)
         top_len = len(self.TOP[0])
         for line in content:
-            while len(line) > top_len  - 2 :
+            while len(line) > top_len - 2:
                 new_line = "|" + line[:top_len - 2] + "|"
                 line = line[top_len - 3:]
                 ascii.append(new_line)

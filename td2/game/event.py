@@ -6,6 +6,5 @@ class Event:
     def execute(self) -> bool:
         return True
 
-    def capture_input(self, input:str) -> bool:
+    def capture_input(self, input: str) -> bool:
         return input == "q"
-
